@@ -1,0 +1,1 @@
+Batch image processing scripts to be run within the gwyddion shell. They act on all open files (putting processed files into a subfolder relative to the originals).
