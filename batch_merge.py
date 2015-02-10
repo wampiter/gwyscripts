@@ -1,7 +1,8 @@
 from glob import glob
 
 filebase = "/Users/jot/Desktop/test"
-channels = ['Topo', 'AUX1', 'AUX2', 'Amplitude0', 'Phase0', 'Amplitude 1st', 'Phase 1st']
+channels = ['Topography', 'AUX1', 'AUX2', 'Amplitude0', 'Phase0', 'Amplitude 1st', 'Phase 1st']
+names = ['Topography', 'MIM-Im', 'MIM-Re', 'MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Im First Pass']
 
 #Load all from channels by channel and scan number:
 containers = []
@@ -19,7 +20,9 @@ for number, topo_container in enumerate([scan[0] for scan in containers]):
 	if topo_container != None:
 		gwy_app_data_browser_add(topo_container)
 		gwy_app_data_browser_select_data_field(topo_container, 0)
-		for other_container in containers[number][1:]:
+		for index, other_container in enumerate(containers[number][1:]):
 			if other_container != None:
+				gwy_app_set_data_field_title(other_container, 0, names[index+1])
 				gwy_app_data_browser_merge(other_container)
 		gwy_file_save(topo_container, filebase + "/proc/scan" + str(number) + ".gwy", gwy.RUN_NONINTERACTIVE)
+  
