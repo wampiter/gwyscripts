@@ -1,7 +1,11 @@
 from glob import glob
 import gwyutils
+import os
 
 filebase = "/Users/jot/Desktop/test"
+for directory in [filebase+'/proc',filebase + '/pproc']:
+	if not os.path.exists(directory):
+		os.makedirs(directory)
 channels = ['Topography', 'AUX1', 'AUX2', 'Amplitude0', 'Phase0', 'Amplitude 1st', 'Phase 1st']
 names = ['Topography', 'MIM-Im', 'MIM-Re', 'MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Im First Pass']
 proc = {'level':[0], 'line_correct_median':[0]}
@@ -30,7 +34,7 @@ for number, topo_container in enumerate(topo_containers):
 				gwy_app_data_browser_merge(other_container)
 		gwy_file_save(topo_container, filebase + "/proc/scan" + str(number) + ".gwy", gwy.RUN_NONINTERACTIVE)
 
-#process channels based on 
+#process by channel:
 for number, topo_container in enumerate(topo_containers):
 	if topo_container != None:
 		for key in proc:
@@ -41,7 +45,4 @@ for number, topo_container in enumerate(topo_containers):
 						gwy_process_func_run(key, topo_container, gwy.RUN_IMMEDIATE)
 		gwy_file_save(topo_container, filebase + "/pproc/scan" + str(number) + ".gwy", gwy.RUN_NONINTERACTIVE)
 			
-			
-	
-#gwy_process_func_run("level", topo_container, gwy.RUN_NONINTERACTIVE)
 print 'done'
