@@ -34,6 +34,17 @@ for number, topo_container in enumerate(topo_containers):
 				gwy_app_data_browser_merge(other_container)
 		gwy_file_save(topo_container, filebase + "/proc/scan" + str(number) + ".gwy", gwy.RUN_NONINTERACTIVE)
 
+#do subtraction for lifted channels
+for number, topo_container in enumterate(topo_containers):
+	mim_id = [Null]*len(channels)
+	for n in xrange(len(channels)):		
+		name = gwy_app_get_data_field_title(topo_container, n)[:-2]
+		for m, setname in names[3:7]:
+			if name == setname:
+				mim_id[m] = n
+	for n, idn in enumerate(mim_id):
+		if idn != Null:
+
 #process by channel:
 for number, topo_container in enumerate(topo_containers):
 	if topo_container != None:
