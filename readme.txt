@@ -1,1 +1,1 @@
-Batch image processing scripts to be run within the gwyddion shell. They act on all open files (putting processed files into a subfolder relative to the originals).
+Batch image processing scripts to be run within the gwyddion shell. Some act on all open files (putting processed files into a subfolder relative to the originals), while 'batch' scripts simply act on all files in the specified directory (filebase).
