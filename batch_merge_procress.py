@@ -7,7 +7,8 @@ for directory in [filebase+'/proc',filebase + '/pproc']:
 	if not os.path.exists(directory):
 		os.makedirs(directory)
 channels = ['Topography', 'AUX1', 'AUX2', 'Amplitude0', 'Phase0', 'Amplitude 1st', 'Phase 1st']
-names = ['Topography', 'MIM-Im', 'MIM-Re', 'MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Im First Pass']
+names = ['Topography', 'MIM-Im', 'MIM-Re', 'MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
+liftchannels = ['MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
 proc = {'level':[0], 'line_correct_median':[0]}
 
 #Load all from channels by channel and scan number:
@@ -36,14 +37,24 @@ for number, topo_container in enumerate(topo_containers):
 
 #do subtraction for lifted channels
 for number, topo_container in enumterate(topo_containers):
-	mim_id = [Null]*len(channels)
+	mim_id = [Null]*4
 	for n in xrange(len(channels)):		
 		name = gwy_app_get_data_field_title(topo_container, n)[:-2]
-		for m, setname in names[3:7]:
+		for m, setname in liftchannels:
 			if name == setname:
 				mim_id[m] = n
-	for n, idn in enumerate(mim_id):
-		if idn != Null:
+		if mim_id[0] != Null:
+			mim_data_arrays = [Null]*4
+			for n, idn in enumerate(mim_id):
+				gwy_app_data_browser_select_data_field(topo_container, idn)
+				datafield = gwy_app_data_browser_get_current(gwy.APP_DATA_FIELD)
+				data_array = gwyutils.data_field_data_as_array(datafield)
+				mim_data_arrays[n] = data_array
+			
+			#mim_im_abs = field(mim_id[2]) - field(mim_id[0])
+			
+			
+			
 
 #process by channel:
 for number, topo_container in enumerate(topo_containers):
