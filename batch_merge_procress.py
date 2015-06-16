@@ -36,25 +36,30 @@ for number, topo_container in enumerate(topo_containers):
 		gwy_file_save(topo_container, filebase + "/proc/scan" + str(number) + ".gwy", gwy.RUN_NONINTERACTIVE)
 
 #do subtraction for lifted channels
-for number, topo_container in enumterate(topo_containers):
-	mim_id = [Null]*4
-	for n in xrange(len(channels)):		
-		name = gwy_app_get_data_field_title(topo_container, n)[:-2]
-		for m, setname in liftchannels:
-			if name == setname:
-				mim_id[m] = n
-		if mim_id[0] != Null:
-			mim_data_arrays = [Null]*4
+for scan_number, topo_container in enumerate(topo_containers):
+	if topo_container != None:
+		mim_id = ['Null']*4
+		for chan_number in xrange(len(channels)):		
+			name = gwy_app_get_data_field_title(topo_container, chan_number)[:-2]
+			for liftchan_number, setname in enumerate(liftchannels):
+				if name == setname:
+					mim_id[liftchan_number] = chan_number
+		if mim_id[0] != 'Null':
+			mim_data_arrays = ['Null']*4
+			mim_data_fields = ['Null']*4
 			for n, idn in enumerate(mim_id):
 				gwy_app_data_browser_select_data_field(topo_container, idn)
 				datafield = gwy_app_data_browser_get_current(gwy.APP_DATA_FIELD)
+				mim_data_fields[n] = datafield
 				data_array = gwyutils.data_field_data_as_array(datafield)
 				mim_data_arrays[n] = data_array
+			for j in [0,1]: #for im and re: relies on order of lift list
+				mim_data_arrays[j][...] = mim_data_arrays[j+2] - mim_data_arrays[j]
+				mim_data_fields[j].data_changed()
 			
-			#mim_im_abs = field(mim_id[2]) - field(mim_id[0])
-			
-			
-			
+		else:
+			print "no lifted channel for scan" + str(scan_number)
+		gwy_file_save(topo_container, filebase + "/proc/scan" + str(scan_number) + ".gwy", gwy.RUN_NONINTERACTIVE)
 
 #process by channel:
 for number, topo_container in enumerate(topo_containers):
