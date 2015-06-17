@@ -1,6 +1,7 @@
 from glob import glob
 import gwyutils
 import os
+from collections import OrderedDict
 
 filebase = "/Users/jot/Desktop/test"
 for directory in [filebase+'/proc',filebase + '/pproc']:
@@ -9,7 +10,7 @@ for directory in [filebase+'/proc',filebase + '/pproc']:
 channels = ['Topography', 'AUX1', 'AUX2', 'Amplitude0', 'Phase0', 'Amplitude 1st', 'Phase 1st']
 names = ['Topography', 'MIM-Im', 'MIM-Re', 'MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
 liftchannels = ['MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
-proc = {'level':[0], 'line_correct_median':[0]}
+proc = OrderedDict([('level',[0]), ('line_correct_median',[0]), ('fix_zero',[0])])
 
 #Load all from channels by channel and scan number:
 containers = []
