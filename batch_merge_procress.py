@@ -10,7 +10,8 @@ for directory in [filebase+'/proc',filebase + '/pproc']:
 channels = ['Topography', 'AUX1', 'AUX2', 'Amplitude0', 'Phase0', 'Amplitude 1st', 'Phase 1st']
 names = ['Topography', 'MIM-Im', 'MIM-Re', 'MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
 liftchannels = ['MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
-proc = OrderedDict([('level',[0]), ('line_correct_median',[0]), ('fix_zero',[0]), ('threshold',[3,4])])
+proc = OrderedDict([('scars_remove', [0]),('level',[0,3,4]), ('line_correct_median',[0]), ('fix_zero',[0]), ('threshold', [0,3,4])])
+
 
 #Load all from channels by channel and scan number:
 containers = []
@@ -71,9 +72,9 @@ settings.set_double_by_name('/module/threshold/sigma', 4.0)
 for number, topo_container in enumerate(topo_containers):
 	if topo_container != None:
 		for key in proc:
-			for n in xrange(len(channels)):
-				if gwy_app_get_data_field_title(topo_container, n)[:-2] in channels:
-					if channels.index(gwy_app_get_data_field_title(topo_container, n)[:-2]) in proc[key]:
+			for n in xrange(len(names)):
+				if gwy_app_get_data_field_title(topo_container, n)[:-2] in names:
+					if names.index(gwy_app_get_data_field_title(topo_container, n)[:-2]) in proc[key]:
 						gwy_app_data_browser_select_data_field(topo_container, n)
 						gwy_process_func_run(key, topo_container, gwy.RUN_IMMEDIATE)
 		gwy_file_save(topo_container, filebase + "/pproc/scan" + str(number) + ".gwy", gwy.RUN_NONINTERACTIVE)
