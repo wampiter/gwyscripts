@@ -10,7 +10,7 @@ for directory in [filebase+'/proc',filebase + '/pproc']:
 channels = ['Topography', 'AUX1', 'AUX2', 'Amplitude0', 'Phase0', 'Amplitude 1st', 'Phase 1st']
 names = ['Topography', 'MIM-Im', 'MIM-Re', 'MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
 liftchannels = ['MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
-proc = OrderedDict([('level',[0]), ('line_correct_median',[0]), ('fix_zero',[0])])
+proc = OrderedDict([('level',[0]), ('line_correct_median',[0]), ('fix_zero',[0]), ('threshold',[3,4])])
 
 #Load all from channels by channel and scan number:
 containers = []
@@ -61,6 +61,11 @@ for scan_number, topo_container in enumerate(topo_containers):
 		else:
 			print "no lifted channel for scan" + str(scan_number)
 		gwy_file_save(topo_container, filebase + "/proc/scan" + str(scan_number) + ".gwy", gwy.RUN_NONINTERACTIVE)
+
+#modify process (module) settings
+settings = gwy_app_settings_get()
+settings.set_int32_by_name('/module/threshold/mode', 2)
+settings.set_double_by_name('/module/threshold/sigma', 4.0)
 
 #process by channel:
 for number, topo_container in enumerate(topo_containers):
