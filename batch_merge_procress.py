@@ -3,15 +3,15 @@ import gwyutils
 import os
 from collections import OrderedDict
 
-filebase = "/Users/jot/Desktop/test"
-for directory in [filebase+'/proc',filebase + '/pproc']:
+filebase = "/Users/jot/Desktop/smalltest"
+for directory in [filebase+'/proc',filebase + '/pproc',filebase + '/pproc/png']:
 	if not os.path.exists(directory):
 		os.makedirs(directory)
 channels = ['Topography', 'AUX1', 'AUX2', 'Amplitude0', 'Phase0', 'Amplitude 1st', 'Phase 1st']
 names = ['Topography', 'MIM-Im', 'MIM-Re', 'MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
 liftchannels = ['MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
 proc = OrderedDict([('scars_remove', [0]),('level',[0,3,4]), ('line_correct_median',[0]), ('threshold', [0,3,4]), ('fix_zero',[0])])
-
+invert_channels = [1]
 
 #Load all from channels by channel and scan number:
 containers = []
@@ -57,6 +57,8 @@ for scan_number, topo_container in enumerate(topo_containers):
 				mim_data_arrays[n] = data_array
 			for j in [0,1]: #for im and re: relies on order of lift list
 				mim_data_arrays[j][...] = mim_data_arrays[j+2] - mim_data_arrays[j]
+				if j in invert_channels:
+					mim_data_arrays[j] *= -1
 				mim_data_fields[j].data_changed()
 			
 		else:
@@ -77,6 +79,7 @@ for number, topo_container in enumerate(topo_containers):
 					if names.index(gwy_app_get_data_field_title(topo_container, n)[:-2]) in proc[key]:
 						gwy_app_data_browser_select_data_field(topo_container, n)
 						gwy_process_func_run(key, topo_container, gwy.RUN_IMMEDIATE)
+						gwyutils.save_dfield_to_png(topo_container, '/%s/data' % n, '%s/pproc/png/scan%s_%s.png' % (filebase,number,gwy_app_get_data_field_title(topo_container, n)[:-2]), gwy.RUN_NONINTERACTIVE)
 		gwy_file_save(topo_container, filebase + "/pproc/scan" + str(number) + ".gwy", gwy.RUN_NONINTERACTIVE)
 			
 print 'done'
