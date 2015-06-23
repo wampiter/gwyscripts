@@ -1,15 +1,13 @@
 from PIL import Image
 import os, sys, glob
 
-def image_stitch(channels, numbers, direction = 'v'):
-	'''Stitch together row/column images
+def stitch_scans(channels = ['Topography', 'MIM-Re Lifted', 'MIM-Im Lifted'], numbers, direction = 'v'):
+	'''Stitch together row/column images of same channel for output pngs of batch_merge_proc
 	
-	channels: channel names (after scan number)
-	numbers: ordered list of scan numbers
+	channels: channel names (list)
+	numbers: ordered list of scan numbers (eg. range(1,7,2))
 	direction: v or h
 	'''
-	ddict = {'v':1, 'h':0}
-	dnum = ddict[direction]
 	
 	#Load Input Files
 	images = {}
@@ -37,3 +35,21 @@ def image_stitch(channels, numbers, direction = 'v'):
 				results[m].paste(image, (0, n*size[1]))
 		#results[m].show
 		results[m].save('stitch_' + str(min(numbers)) + '-' + str(max(numbers)) + '_' + channel + '.png')
+		
+def stitch_channels(channels, direction = 'h'):
+	'''Stitch together row/column images of same scan(s), different channels
+	
+	channels: channel names (ordered list)
+	direction: v or h
+	'''
+	
+	#Load input files:
+	images = []
+	for channel in channels:
+		scans = []
+		filenames = []
+		for filename in glob.glob("*" + channel + ".png"):
+			scans.append(Image.open(filename))
+			filenames.append(filename)
+		images.append([filenames, scans])
+			
