@@ -12,28 +12,28 @@ def image_stitch(channels, numbers, direction = 'v'):
 	dnum = ddict[direction]
 	
 	#Load Input Files
-	images = numbers
+	images = {}
 	for channel in channels:
-		for n, number in enumerate(numbers):
-			images[n] = Image.open('scan'+ str(number) + "_" + str(channel) + '.png')
+		images[channel] = []
+		for number in numbers:
+			images[channel].append(Image.open('scan'+ str(number) + "_" + str(channel) + '.png'))
 	
 	#Merge images
-	size = images[0].size
+	size = images[channels[0]][0].size
 	if direction == 'h':
-		outsize = (size[0]*len(images), size[1])
+		outsize = (size[0]*len(images[channels[0]]), size[1])
 	elif direction == 'v':
-		outsize = (size[0], size[1]*len(images))
+		outsize = (size[0], size[1]*len(images[channels[0]]))
 	else:
 		return ValueError
 			
-	result = Image.new('RGB', outsize)
+	results = [Image.new('RGB', outsize)]*len(channels)
 	
-	for n, image in enumerate(images):
-		if direction == 'h':
-			result.paste(image, (n*size[0], 0))
-		if direction == 'v':
-			result.paste(image, (0, n*size[1]))
-	
-	result.show()
-	#Save files
-#image_stitch(['Topography'], xrange(1,9,2), 'v')
+	for m, channel in enumerate(channels):
+		for n, image in enumerate(images[channel]):
+			if direction == 'h':
+				results[m].paste(image, (n*size[0], 0))
+			if direction == 'v':
+				results[m].paste(image, (0, n*size[1]))
+		#results[m].show
+		results[m].save('stitch_' + str(min(numbers)) + '-' + str(max(numbers)) + '_' + channel + '.png')
