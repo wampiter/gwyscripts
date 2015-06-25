@@ -50,6 +50,30 @@ def stitch_channels(channels, direction = 'h'):
 		filenames = []
 		for filename in glob.glob("*" + channel + ".png"):
 			scans.append(Image.open(filename))
-			filenames.append(filename)
+			filenames.append(filename[:-(4 + len(channel))])
 		images.append([filenames, scans])
-			
+	
+	#organize groups to be merged
+	organized_images = []
+	for topo_scan in images[0]:
+		filenames = topo_scan[0]
+		scans = topo_scan[1]
+		for n, filename in enumerate(filenames):
+			organized_images.append(topo_scan[n]) #add filename and scan
+			for channel_images in images[1:]:
+				c_filenames = channel_images[0]
+				c_scans = channel_images[1]
+				for m, c_filename in enumerate(c_filenames):
+					if filename == c_filename:
+						organized_images[n].append(c_scans[m])
+						
+	#Stitch images
+	for group in organized_images:
+		size = group[1].size
+		if direction == 'h':
+			outsize = (size[0]*len(images[channels[0]]), size[1])
+		elif direction == 'v':
+			outsize = (size[0], size[1]*len(images[channels[0]]))
+		else:
+			return ValueError
+		result = Image.new('RGB', outsize)
