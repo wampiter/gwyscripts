@@ -1,7 +1,7 @@
 from PIL import Image
 import os, sys, glob
 
-def stitch_scans(channels = ['Topography', 'MIM-Re Lifted', 'MIM-Im Lifted'], numbers, direction = 'v'):
+def stitch_scans(numbers, channels = ['Topography', 'MIM-Re Lifted', 'MIM-Im Lifted'], direction = 'v'):
 	'''Stitch together row/column images of same channel for output pngs of batch_merge_proc
 	
 	channels: channel names (list)
@@ -31,12 +31,12 @@ def stitch_scans(channels = ['Topography', 'MIM-Re Lifted', 'MIM-Im Lifted'], nu
 		for n, image in enumerate(images[channel]):
 			if direction == 'h':
 				results[m].paste(image, (n*size[0], 0))
-			if direction == 'v':
+			elif direction == 'v':
 				results[m].paste(image, (0, n*size[1]))
 		#results[m].show
 		results[m].save('stitch_' + str(min(numbers)) + '-' + str(max(numbers)) + '_' + channel + '.png')
 		
-def stitch_channels(channels, direction = 'h'):
+def stitch_channels(channels = ['Topography', 'MIM-Re Lifted', 'MIM-Im Lifted'], direction = 'h'):
 	'''Stitch together row/column images of same scan(s), different channels
 	
 	channels: channel names (ordered list)
@@ -55,25 +55,32 @@ def stitch_channels(channels, direction = 'h'):
 	
 	#organize groups to be merged
 	organized_images = []
-	for topo_scan in images[0]:
-		filenames = topo_scan[0]
-		scans = topo_scan[1]
-		for n, filename in enumerate(filenames):
-			organized_images.append(topo_scan[n]) #add filename and scan
-			for channel_images in images[1:]:
-				c_filenames = channel_images[0]
-				c_scans = channel_images[1]
-				for m, c_filename in enumerate(c_filenames):
-					if filename == c_filename:
-						organized_images[n].append(c_scans[m])
+	topo_sets = images[0]
+	filenames = topo_sets[0]
+	topo_scans = topo_sets[1]
+	for n, filename in enumerate(filenames):
+		organized_images.append([filename, topo_scans[n]]) #add filename and scan
+		for channel_images in images[1:]:
+			c_filenames = channel_images[0]
+			c_scans = channel_images[1]
+			for m, c_filename in enumerate(c_filenames):
+				if filename == c_filename:
+					organized_images[n].append(c_scans[m])
 						
 	#Stitch images
 	for group in organized_images:
 		size = group[1].size
 		if direction == 'h':
-			outsize = (size[0]*len(images[channels[0]]), size[1])
+			outsize = (size[0]*len(group[1:]), size[1])
 		elif direction == 'v':
-			outsize = (size[0], size[1]*len(images[channels[0]]))
+			outsize = (size[0], size[1]*len(group[1:]))
 		else:
 			return ValueError
 		result = Image.new('RGB', outsize)
+		for n, scan in enumerate(group[1:]):
+			if direction == 'h':
+				result.paste(scan, (n*size[0], 0))
+			elif direction == 'v':
+				result.paste(scan, (0, n*size[1]))
+		#result.show()
+		result.save(group[0] + 'comb.png')
