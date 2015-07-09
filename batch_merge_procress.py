@@ -66,9 +66,9 @@ for scan_number, topo_container in enumerate(topo_containers):
 		gwy_file_save(topo_container, filebase + "/proc/scan" + str(scan_number) + ".gwy", gwy.RUN_NONINTERACTIVE)
 
 #modify process (module) settings
-settings = gwy_app_settings_get()
-settings.set_int32_by_name('/module/threshold/mode', 2)
-settings.set_double_by_name('/module/threshold/sigma', 4.0)
+#settings = gwy_app_settings_get()
+#settings.set_int32_by_name('/module/threshold/mode', 2)
+#settings.set_double_by_name('/module/threshold/sigma', 4.0)
 
 #process by channel:
 for number, topo_container in enumerate(topo_containers):
