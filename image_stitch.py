@@ -36,7 +36,7 @@ def stitch_scans(numbers, channels = ['Topography', 'MIM-Re Lifted', 'MIM-Im Lif
 		#results[m].show
 		results[m].save('stitch_' + str(min(numbers)) + '-' + str(max(numbers)) + '_' + channel + '.png')
 		
-def stitch_channels(channels = ['Topography', 'MIM-Re Lifted', 'MIM-Im Lifted'], direction = 'h'):
+def stitch_channels(channels = ['Topography', 'MIM-Im Lifted', 'MIM-Re Lifted'], direction = 'h'):
 	'''Stitch together row/column images of same scan(s), different channels
 	
 	channels: channel names (ordered list)
