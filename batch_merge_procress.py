@@ -83,7 +83,7 @@ for number, topo_container in enumerate(topo_containers):
 						#	settings.set_double_by_name('/module/threshold/sigma', 4.0)
 						gwy_app_data_browser_select_data_field(topo_container, n)
 						gwy_process_func_run(key, topo_container, gwy.RUN_IMMEDIATE)
-						gwyutils.save_dfield_to_png(topo_container, '/%s/data' % n, '%s/pproc/png/scan%s_%s.png' % (filebase,number,gwy_app_get_data_field_title(topo_container, n)[:-2]), gwy.RUN_NONINTERACTIVE)
+					gwyutils.save_dfield_to_png(topo_container, '/%s/data' % n, '%s/pproc/png/scan%s_%s.png' % (filebase,number,gwy_app_get_data_field_title(topo_container, n)[:-2]), gwy.RUN_NONINTERACTIVE)
 		gwy_file_save(topo_container, filebase + "/pproc/scan" + str(number) + ".gwy", gwy.RUN_NONINTERACTIVE)
 			
 print 'done'
