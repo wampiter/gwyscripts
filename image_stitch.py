@@ -9,6 +9,9 @@ def stitch_scans(numbers, channels = ['Topography', 'MIM-Re Lifted', 'MIM-Im Lif
 	direction: v or h
 	'''
 	
+	if not os.path.exists("./combined"):
+		os.makedirs("./combined")	
+	
 	#Load Input Files
 	images = {}
 	for channel in channels:
@@ -34,7 +37,7 @@ def stitch_scans(numbers, channels = ['Topography', 'MIM-Re Lifted', 'MIM-Im Lif
 			elif direction == 'v':
 				results[m].paste(image, (0, n*size[1]))
 		#results[m].show
-		results[m].save('stitch_' + str(min(numbers)) + '-' + str(max(numbers)) + '_' + channel + '.png')
+		results[m].save('combined/stitch_' + str(min(numbers)) + '-' + str(max(numbers)) + '_' + channel + '.png')
 		
 def stitch_channels(channels = ['Topography', 'MIM-Im Lifted', 'MIM-Re Lifted'], direction = 'h'):
 	'''Stitch together row/column images of same scan(s), different channels
@@ -42,6 +45,9 @@ def stitch_channels(channels = ['Topography', 'MIM-Im Lifted', 'MIM-Re Lifted'],
 	channels: channel names (ordered list)
 	direction: v or h
 	'''
+	
+	if not os.path.exists("./chancomb"):
+		os.makedirs("./chancomb")		
 	
 	#Load input files:
 	images = []
@@ -83,4 +89,36 @@ def stitch_channels(channels = ['Topography', 'MIM-Im Lifted', 'MIM-Re Lifted'],
 			elif direction == 'v':
 				result.paste(scan, (0, n*size[1]))
 		#result.show()
-		result.save(group[0] + 'comb.png')
+		result.save("./chancomb/" + group[0] + 'comb.png')
+		
+def stitch_general(numbers, before = '', after = '', direction = 'h'):
+	'''
+	'''
+	
+	if not os.path.exists("./combined"):
+		os.makedirs("./combined")	
+	
+	#Load Input Files
+	images = []
+	for number in numbers:
+		images.append(Image.open(before + str(number) + after + '.png'))
+	
+	#Merge images
+	size = images[0].size
+	if direction == 'h':
+		outsize = (size[0]*len(images), size[1])
+	elif direction == 'v':
+		outsize = (size[0], size[1]*len(images))
+	else:
+		return ValueError
+			
+	result = Image.new('RGB', outsize)
+	
+	for n, image in enumerate(images):
+		if direction == 'h':
+			result.paste(image, (n*size[0], 0))
+		elif direction == 'v':
+			results.paste(image, (0, n*size[1]))
+		#result.show
+	result.save('combined/stitch' + before + str(min(numbers)) + '-' + str(max(numbers)) + after + '.png')
+		

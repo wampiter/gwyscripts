@@ -10,7 +10,7 @@ for directory in [filebase+'/proc',filebase + '/pproc',filebase + '/pproc/png']:
 channels = ['Topography', 'AUX1', 'AUX2', 'Amplitude0', 'Phase0', 'Amplitude 1st', 'Phase 1st']
 names = ['Topography', 'MIM-Im', 'MIM-Re', 'MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
 liftchannels = ['MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
-proc = OrderedDict([('scars_remove', [0]),('level',[0,3,4]), ('line_correct_median',[0]), ('threshold', [0,3,4]), ('fix_zero',[0])])
+proc = OrderedDict([('scars_remove', []),('level',[0]), ('line_correct_median',[]), ('threshold', []), ('fix_zero',[0])])
 invert_channels = [1]
 
 #Load all from channels by channel and scan number:
@@ -59,6 +59,7 @@ for scan_number, topo_container in enumerate(topo_containers):
 				mim_data_arrays[j][...] = mim_data_arrays[j+2] - mim_data_arrays[j]
 				if j in invert_channels:
 					mim_data_arrays[j] *= -1
+					mim_data_arrays[j+2] *= -1
 				mim_data_fields[j].data_changed()
 			
 		else:
