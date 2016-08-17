@@ -118,7 +118,7 @@ def stitch_general(numbers, before = '', after = '', direction = 'h'):
 		if direction == 'h':
 			result.paste(image, (n*size[0], 0))
 		elif direction == 'v':
-			results.paste(image, (0, n*size[1]))
+			result.paste(image, (0, n*size[1]))
 		#result.show
 	result.save('combined/stitch' + before + str(min(numbers)) + '-' + str(max(numbers)) + after + '.png')
 		
