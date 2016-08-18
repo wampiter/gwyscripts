@@ -7,8 +7,8 @@ filebase = "/Users/jot/Desktop/smalltest"
 for directory in [filebase+'/proc',filebase + '/pproc',filebase + '/pproc/png']:
 	if not os.path.exists(directory):
 		os.makedirs(directory)
-channels = ['Topography', 'AUX1', 'AUX2', 'Amplitude0', 'Phase0', 'Amplitude 1st', 'Phase 1st']
-names = ['Topography', 'MIM-Im', 'MIM-Re', 'MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
+channels = ['Topography', 'Error Signal', 'AUX1', 'AUX2', 'Amplitude0', 'Phase0', 'Amplitude 1st', 'Phase 1st']
+names = ['Topography', 'Error Signal', 'MIM-Im', 'MIM-Re', 'MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
 liftchannels = ['MIM-Im Lifted', 'MIM-Re Lifted', 'MIM-Im First Pass', 'MIM-Re First Pass']
 proc = OrderedDict([('scars_remove', []),('level',[0]), ('line_correct_median',[]), ('threshold', []), ('fix_zero',[0])])
 invert_channels = [1]
